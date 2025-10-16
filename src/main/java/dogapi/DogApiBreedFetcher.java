@@ -7,7 +7,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import org.json.JSONException;
 
 /**
  * BreedFetcher implementation that relies on the dog.ceo API.
@@ -24,12 +27,40 @@ public class DogApiBreedFetcher implements BreedFetcher {
      * @throws BreedNotFoundException if the breed does not exist (or if the API call fails for any reason)
      */
     @Override
-    public List<String> getSubBreeds(String breed) {
-        // TODO Task 1: Complete this method based on its provided documentation
-        //      and the documentation for the dog.ceo API. You may find it helpful
-        //      to refer to the examples of using OkHttpClient from the last lab,
-        //      as well as the code for parsing JSON responses.
-        // return statement included so that the starter code can compile and run.
-        return new ArrayList<>();
+    public List<String> getSubBreeds(String breed) throws BreedNotFoundException {
+        if (breed == null || breed.isBlank()) {
+            throw new BreedNotFoundException("Breed cannot be null or blank.");
+        }
+
+        String url = "https://dog.ceo/api/breed/"
+                + breed.trim().toLowerCase(Locale.ROOT)
+                + "/list";
+
+        Request request = new Request.Builder().url(url).get().build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.body() == null) {
+                throw new BreedNotFoundException("Empty response from API.");
+            }
+            String body = response.body().string();
+
+            JSONObject json = new JSONObject(body);
+            String status = json.optString("status", "");
+
+            if (!"success".equals(status)) {
+                String msg = json.optString("message", "Breed not found (main breed does not exist)");
+                throw new BreedNotFoundException(msg);
+            }
+
+            JSONArray arr = json.getJSONArray("message");
+            List<String> out = new ArrayList<>(arr.length());
+            for (int i = 0; i < arr.length(); i++) {
+                out.add(arr.getString(i));
+            }
+            return out;
+
+        } catch (IOException | JSONException e) {
+            throw new BreedNotFoundException("Could not fetch breed list from API.");
+        }
     }
 }
