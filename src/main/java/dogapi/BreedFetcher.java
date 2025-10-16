@@ -20,7 +20,7 @@ public interface BreedFetcher {
         public BreedNotFoundException(String message) {
             super(message);
         }
-        public BreedNotFoundException(String message,  Throwable cause) {
+        public BreedNotFoundException(String message, Throwable cause) {
             super(message, cause);
         }
     }

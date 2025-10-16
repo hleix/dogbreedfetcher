@@ -29,8 +29,7 @@ public class Main {
             List<String> subs = breedFetcher.getSubBreeds(breed);
             return (subs == null) ? 0 : subs.size();
         } catch (BreedFetcher.BreedNotFoundException e) {
-            // Invalid breed or fetch failure -> per this helper's contract, return 0.
             return 0;
         }
     }
-    }
+}
