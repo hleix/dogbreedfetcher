@@ -71,7 +71,7 @@ Note: The example in the documentation doesn't show it, but if you specify a bre
 
 ### Task 1:
 
-- [ ] Complete the `DogApiBreedFetcher` class.
+- [x] Complete the `DogApiBreedFetcher` class.
 
 > This is probably the most involved part of the code, as
 > you need to read the API documentation, make the API call,
